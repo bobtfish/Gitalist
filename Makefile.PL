@@ -49,6 +49,10 @@ if ($ENV{GITALIST_RELEASE_TESTING}) {
     }, $FindBin::Bin . "/lib");
 }
 
+if ($^O eq 'MSWin32') {
+    requires 'Win32::Codepage';
+}
+
 requires 'Catalyst::Runtime' => '5.8001402';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::StackTrace';

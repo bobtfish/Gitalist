@@ -11,13 +11,20 @@ class Gitalist::Git::Repository with Gitalist::Git::HasUtils {
     use DateTime;
     use Encode qw/decode/;
 
-    use if $^O ne 'MSWin32', 'I18N::Langinfo', => qw/langinfo CODESET/;
     BEGIN {
-        no strict 'subs';
-        *__owner = defined &langinfo
-            ? sub { map { decode(langinfo(CODESET), $_) } (getpwuid $_[0]->path->stat->uid)[6,0] }
-            : sub { return qw/OwnEr GroUp/ }
-        ;
+        my $slice = sub { return (getpwuid $_[0]->stat->uid)[6,0] };
+        if ($^O eq 'MSWin32') {
+            require Win32::Codepage;
+            *__owner = sub {
+                my $w32encoding = Win32::Codepage::get_encoding();
+                my $encoding = $w32encoding ? Encode::resolve_alias($w32encoding) : '';
+                return map { decode($encoding, $_) } $slice->(@_);
+            };
+        }
+        else {
+            require I18N::Langinfo;
+            *__owner = sub { map { decode(I18N::Langinfo::langinfo(I18N::Langinfo::CODESET()), $_) } $slice->(@_) };
+        }
     }
 
     use Gitalist::Git::Object::Blob;
@@ -250,7 +257,7 @@ class Gitalist::Git::Repository with Gitalist::Git::HasUtils {
     }
 
     method _build_owner {
-        my ($gecos, $name) = $self->__owner;
+        my ($gecos, $name) = __owner($self->path);
         $gecos =~ s/,+$//;
         return length($gecos) ? $gecos : $name;
     }
