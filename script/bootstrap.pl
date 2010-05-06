@@ -52,7 +52,6 @@ force(qw/install local::lib/);
 
 require lib::core::only; # Turn lib::core:only on
 require local::lib; # Turn local::lib on
-lib::core::only->import();
 local::lib->import( $target );
 
 # Become fully self contained
