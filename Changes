@@ -3,10 +3,30 @@ This file documents the revision history for Perl extension Gitalist.
     - Fix for loadCommitInfo.
     - Fix tests to work with local-libbery.
     - Correct example link and FCGI script.
-    - Bumping version and updated Changes appropriately.
     - Throttle the commit info loading.
     - Update bootstrapping for local::lib 1.006000.
     - Fixed author_* barewords in Makefile.PL.
+
+0.001006 2010-05-13
+    - Fix Catalyst::Action::REST dependency (there wasn't one previously)
+    - Depend on latest Catalyst::View::TT due to a previous bad version
+      breaking things.
+    - Add render_die => 1 in the View::TT config as we do want real exceptions
+      when we call ->render ourselves.
+
+0.001005 2010-05-11
+    - Depend on latest MX::Declare to fix issues for people who upgrade
+      MooseX::Types::Structured to a newer version.
+    - Add some padding below, so file icons are not chopped off
+    - Updated favicon to cope with dark grey backgrounds
+
+0.001004 2010-05-06
+    - Remove unneeded dependencies:
+      - XML::OPML::SimpleGen
+      - XML::Atom
+      - XML::RSS
+    - Fixed author_* barewords in Makefile.PL so that users checking out from
+      git without the author modules works correctly.
 
 0.001003 2010-04-21
     - Added folder / file icons in tree view (Foxtons)

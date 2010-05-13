@@ -61,10 +61,10 @@ requires 'Catalyst::Plugin::SubRequest' => '0.15';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Component::InstancePerContext';
 requires 'Catalyst::Controller::ActionRole';
+requires 'Catalyst::Action::REST' => '0.85';
 requires 'Catalyst::View::Component::SubInclude' => '0.07';
-requires 'Catalyst::View::TT';
+requires 'Catalyst::View::TT' => '0.34';
 requires 'Try::Tiny';
-requires 'Catalyst::Action::Serialize';
 
 requires 'Template';
 requires 'Template::Provider::Encoding';
@@ -75,9 +75,10 @@ requires 'Config::General';
 requires 'Moose';
 requires 'Moose::Autobox';
 requires 'MooseX::MultiMethods' => '0.10';
-requires 'MooseX::Declare' => '0.32';
+
 requires 'MooseX::Types::DateTime';
 requires 'MooseX::Types::ISO8601';
+requires 'MooseX::Declare' => '0.33';
 requires 'MooseX::Types::Common';
 requires 'MooseX::Types::Path::Class';
 requires 'MooseX::Types';
