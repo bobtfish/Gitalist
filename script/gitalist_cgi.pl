@@ -1,8 +1,5 @@
 #!/usr/bin/env perl
 
-use FindBin;
-BEGIN { do "$FindBin::Bin/env" or die $@ }
-
 use Catalyst::ScriptRunner;
 Catalyst::ScriptRunner->run('Gitalist', 'CGI');
 
