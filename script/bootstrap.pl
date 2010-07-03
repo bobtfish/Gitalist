@@ -44,10 +44,19 @@ lib->import("$target/lib/perl5");
 # can't access
 
 local %CPAN::Config;
-require CPAN::HandleConfig;
+require CPAN::HandleConfig;w
 CPAN::HandleConfig->load();
 $CPAN::Config->{prefs_dir} = "$ENV{HOME}/.cpan/prefs";
 
+# First just force install local::lib to get it local to $target
+force(qw/install LWP::UserAgent/); # Need LWP for CPAN to work on Mac, as curl and
+                           # wget puke on the spaces in
+                           # ~/Library/Applicaton Support
+                           # Note - this needs to happen before File::HomeDir
+# Need to force File::HomeDir on the Mac
+if ($^O eq "darwin") {
+    force(qw/install Mac::Carbon/);
+}
 force(qw/install local::lib/);
 
 require lib::core::only; # Turn lib::core:only on
@@ -76,6 +85,28 @@ install('CPAN');
 # For some reason this isn't installed along with M::I::Catalyst.
 install('File::Copy::Recursive');
 install('Module::Install::Catalyst');
+
+# setup distroprefs
+{
+    # Ok, god only knows what version of CPAN we started with, so lets nuke the
+    # config and try to reload it here for safety
+    local %CPAN::Config;
+    require CPAN::HandleConfig; # not installed till we installed CPAN (5.8.x)
+    CPAN::HandleConfig->load();
+    mkdir $CPAN::Config->{prefs_dir} unless -d $CPAN::Config->{prefs_dir};
+    open(my $prefs, ">", File::Spec->catfile($CPAN::Config->{prefs_dir},
+        "catalyst_local-lib-disable-mech-live.yml")) or die "Can't open prefs_dir: $!";
+
+    print $prefs qq{---
+comment: "WWW-Mechanize regularly fails its live tests, turn them off."
+match:
+  distribution: "^PETDANCE/WWW-Mechanize-1.\\d+\\.tar\\.gz"
+patches:
+  - "BOBTFISH/WWW-Mechanize-1.XX-BOBTFISH-01_notests.patch.gz"
+};
+
+    close($prefs);
+}
 
 print "local::lib setup, type perl Makefile.PL && make installdeps to install dependencies";
 
