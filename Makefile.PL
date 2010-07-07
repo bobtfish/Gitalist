@@ -108,6 +108,7 @@ catalyst;
 if ($Module::Install::AUTHOR) {
     system("pod2text lib/Gitalist.pm > README")
         and die $!;
+    include 'File::Copy::Recursive';
 }
 
 if ($ENV{GITALIST_RELEASE_TESTING}) {
